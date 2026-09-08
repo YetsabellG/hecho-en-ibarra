@@ -9,13 +9,14 @@ import { supabase } from "../lib/supabase";
 
 const ADMIN_EMAIL = "guerrero.antonellaa11@gmail.com";
 
-type AdminStats = { businesses: number; products: number; promotions: number };
+type AdminStats = { businesses: number; products: number; promotions: number; events: number };
 type BusinessRow = { id: number; name: string; slug: string; category: string | null; city: string | null; verified: boolean; premium: boolean };
 
 const cards = [
   { key: "businesses" as const, label: "Emprendimientos", icon: Building2, color: "bg-[#FDE8E5] text-[#A53D36]" },
   { key: "products" as const, label: "Productos", icon: Package, color: "bg-[#FFF2D8] text-[#9A6A16]" },
   { key: "promotions" as const, label: "Promociones", icon: Tags, color: "bg-[#E8F2EB] text-[#39724A]" },
+  { key: "events" as const, label: "Eventos", icon: ClipboardList, color: "bg-[#E9E8F8] text-[#57518C]" },
 ];
 
 export default function AdminPage() {
@@ -23,7 +24,7 @@ export default function AdminPage() {
   const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<number | null>(null);
-  const [stats, setStats] = useState<AdminStats>({ businesses: 0, products: 0, promotions: 0 });
+  const [stats, setStats] = useState<AdminStats>({ businesses: 0, products: 0, promotions: 0, events: 0 });
   const [businesses, setBusinesses] = useState<BusinessRow[]>([]);
   const [error, setError] = useState("");
 
@@ -32,17 +33,18 @@ export default function AdminPage() {
     async function loadAdminPanel() {
       const user = await getUser();
       if (!user || user.email?.toLowerCase() !== ADMIN_EMAIL) { router.replace("/auth/login"); return; }
-      const [businessResult, products, promotions] = await Promise.all([
+      const [businessResult, products, promotions, events] = await Promise.all([
         supabase.from("businesses").select("id,name,slug,category,city,verified,premium").order("created_at", { ascending: false }),
         supabase.from("products").select("id", { count: "exact", head: true }),
         supabase.from("promotions").select("id", { count: "exact", head: true }),
+        supabase.from("events").select("id", { count: "exact", head: true }),
       ]);
       if (!active) return;
-      const firstError = businessResult.error || products.error || promotions.error;
+      const firstError = businessResult.error || products.error || promotions.error || events.error;
       if (firstError) setError("No se pudieron cargar todos los datos del panel.");
       const rows = (businessResult.data || []) as BusinessRow[];
       setBusinesses(rows);
-      setStats({ businesses: businessResult.count ?? rows.length, products: products.count ?? 0, promotions: promotions.count ?? 0 });
+      setStats({ businesses: businessResult.count ?? rows.length, products: products.count ?? 0, promotions: promotions.count ?? 0, events: events.count ?? 0 });
       setAuthorized(true); setLoading(false);
     }
     loadAdminPanel();
