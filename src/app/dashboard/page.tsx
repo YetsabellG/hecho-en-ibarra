@@ -110,9 +110,9 @@ setBusinessName(
   🔥 Promociones
 </Link>
 
-          <button className="w-full text-left p-4 rounded-xl hover:bg-gray-100">
-            📅 Eventos
-          </button>
+              <Link href="/dashboard/eventos" className="block w-full text-left p-4 rounded-xl hover:bg-gray-100">
+                📅 Eventos
+              </Link>
 
           <button className="w-full text-left p-4 rounded-xl hover:bg-gray-100">
             ⭐ Destacados
