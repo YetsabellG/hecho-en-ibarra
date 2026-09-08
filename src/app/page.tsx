@@ -1,17 +1,27 @@
+import Header from "./components/layout/Header";
+import Hero from "./components/home/Hero";
+import Categories from "./components/categories/Categories";
+import Featured from "./components/featured/Featured";
+import Recent from "./components/recent/Recent";
+import Promotions from "./components/promotions/Promotions";
+import Events from "./components/events/Events";
+import Plans from "./components/plans/Plans";
+import About from "./components/about/About";
+import Footer from "./components/footer/Footer";
+
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white flex flex-col items-center justify-center">
-      <h1 className="text-5xl font-bold text-red-700">
-        Hecho en Ibarra
-      </h1>
-
-      <p className="mt-4 text-xl text-gray-600">
-        Descubre, compra y apoya al talento local de Ibarra.
-      </p>
-
-      <button className="mt-8 bg-red-700 text-white px-8 py-3 rounded-full hover:bg-red-800 transition">
-        Explorar emprendimientos
-      </button>
-    </main>
+    <>
+      <Header />
+      <Hero />
+      <Categories />
+      <Featured />
+      <Recent />
+      <Promotions />
+      <Events />
+      <Plans />
+<About />
+<Footer />
+    </>
   );
 }

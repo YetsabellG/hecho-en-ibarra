@@ -1,0 +1,14 @@
+export interface Business {
+  id: number;
+  slug: string;
+  name: string;
+  verified: boolean;
+  premium: boolean;
+  category: string;
+  description: string;
+  city: string;
+  whatsapp: string;
+  instagram: string;
+  image: string;
+  products: number;
+}
