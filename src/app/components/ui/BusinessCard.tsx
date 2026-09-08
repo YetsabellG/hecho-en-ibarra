@@ -39,7 +39,7 @@ export default function BusinessCard({
 
         {premium && (
           <div className="absolute top-4 right-4 bg-[#C54B43] text-white px-3 py-1 rounded-full text-xs">
-            Premium
+            Destacado
           </div>
         )}
 
