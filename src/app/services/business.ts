@@ -1,9 +1,7 @@
 import { supabase } from "../lib/supabase";
 
-export async function createBusiness(data: any) {
-  return await supabase
-    .from("businesses")
-    .insert([data]);
+export async function createBusiness(data: unknown) {
+  return await supabase.from("businesses").insert([data]);
 }
 
 export async function getBusiness(uid: string) {
@@ -14,3 +12,20 @@ export async function getBusiness(uid: string) {
     .single();
 }
 
+export async function getPublicBusinesses() {
+  return await supabase
+    .from("businesses")
+    .select("*")
+    .eq("verified", true)
+    .order("premium", { ascending: false })
+    .order("name", { ascending: true });
+}
+
+export async function getBusinessBySlug(slug: string) {
+  return await supabase
+    .from("businesses")
+    .select("*")
+    .eq("slug", slug)
+    .eq("verified", true)
+    .single();
+}
