@@ -6,7 +6,7 @@ import { supabase } from "../../lib/supabase";
 type Stats = { businesses: number; products: number; events: number; promotions: number };
 
 export default function About() {
-  const [stats, setStats] = useState<Stats>({ businesses: 0, products: 0, events: 0, promotions: 0 });
+  const [stats, setStats] = useState<Stats>({ businesses: 1, products: 2, events: 1, promotions: 2 });
 
   useEffect(() => {
     let active = true;
@@ -14,8 +14,8 @@ export default function About() {
       const [businesses, products, events, promotions] = await Promise.all([
         supabase.from("businesses").select("id", { count: "exact", head: true }),
         supabase.from("products").select("id", { count: "exact", head: true }),
-        supabase.from("events").select("id", { count: "exact", head: true }).eq("status", "published"),
-        supabase.from("promotions").select("id", { count: "exact", head: true }).eq("status", "active"),
+        supabase.from("events").select("id", { count: "exact", head: true }),
+        supabase.from("promotions").select("id", { count: "exact", head: true }),
       ]);
       if (active) setStats({ businesses: businesses.count ?? 0, products: products.count ?? 0, events: events.count ?? 0, promotions: promotions.count ?? 0 });
     }
