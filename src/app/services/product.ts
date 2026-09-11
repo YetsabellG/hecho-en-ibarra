@@ -17,6 +17,7 @@ export interface ProductRecord {
   active: boolean | null;
   created_at: string;
   status: ProductStatus | string | null;
+  item_type: "product" | "service" | string | null;
 }
 
 export interface CreateProductData {
@@ -30,6 +31,7 @@ export interface CreateProductData {
   image: string;
   category: string;
   status: ProductStatus;
+  item_type?: "product" | "service";
   featured?: boolean;
   active?: boolean;
 }

@@ -22,6 +22,7 @@ export default function NewProductPage() {
   const [image, setImage] = useState<File | null>(null);
 const [category, setCategory] = useState("");
 const [status, setStatus] = useState<ProductStatus>("available");
+  const [itemType, setItemType] = useState<"product" | "service">("product");
 
   async function handleSubmit(
     e: React.FormEvent<HTMLFormElement>
@@ -63,6 +64,7 @@ const slug =
   stock: Number(stock),
   image: imageUrl,
   category,
+  item_type: itemType,
   status,
 });
 
@@ -82,11 +84,11 @@ const slug =
       <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-lg p-10">
 
         <h1 className="text-4xl font-bold text-[#891C20]">
-          New Product
+          Nuevo producto o servicio
         </h1>
 
         <p className="text-gray-500 mt-2">
-          Add a new product to your business.
+          Publica un producto, tratamiento o servicio de tu emprendimiento.
         </p>
 
         <form
@@ -120,6 +122,14 @@ const slug =
     onChange={(e) => setDescription(e.target.value)}
   />
 
+</div>
+
+<div>
+  <label className="font-semibold">Tipo de publicación</label>
+  <select className="w-full border rounded-xl p-4 mt-2" value={itemType} onChange={(e) => setItemType(e.target.value as "product" | "service")}>
+    <option value="product">Producto</option>
+    <option value="service">Servicio</option>
+  </select>
 </div>
 
 <div>
@@ -231,7 +241,7 @@ const slug =
             type="submit"
             className="bg-[#891C20] text-white px-8 py-4 rounded-xl hover:opacity-90"
           >
-            Save Product
+            Guardar producto o servicio
           </button>
 
         </form>
