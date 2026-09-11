@@ -1,0 +1,11 @@
+import Link from "next/link";
+import Header from "../components/layout/Header";
+import BusinessCard from "../components/ui/BusinessCard";
+import { supabase } from "../lib/supabase";
+import { Sparkles } from "lucide-react";
+
+export default async function EntrepreneursPage() {
+  const { data } = await supabase.from("businesses").select("*").eq("verified", true).order("premium", { ascending: false }).order("created_at", { ascending: false });
+  const businesses = data || [];
+  return <main className="min-h-screen bg-[#f8f1e7]"><Header/><section className="mx-auto max-w-7xl px-5 py-14 lg:px-8"><span className="text-xs font-black uppercase tracking-[.25em] text-[#A94743]">Comunidad local</span><h1 className="mt-3 text-5xl font-black">Emprendedores de Ibarra</h1><p className="mt-5 max-w-2xl text-lg leading-8 text-[#75685f]">Conoce sus historias, revisa sus catálogos y apoya directamente a quienes crean en nuestra ciudad.</p>{businesses.length > 0 && <div className="mt-12"><div className="flex items-end justify-between"><div><span className="text-xs font-black uppercase tracking-[.2em] text-[#A94743]">Selección especial</span><h2 className="mt-2 text-3xl font-black">Destacados</h2></div><Link href="/explorar" className="text-sm font-bold text-[#A94743]">Explorar todo →</Link></div><div className="mt-6 columns-1 gap-6 md:columns-2 lg:columns-3">{businesses.slice(0, 6).map((business) => <div key={business.id} className="mb-6 break-inside-avoid"><BusinessCard name={business.name} category={business.category || "Local"} description={business.description || "Productos y servicios hechos en Ibarra."} image={business.image || "/ibarra-hero.png"} location={business.city || "Ibarra"} verified={business.verified || false} premium={business.premium || false} slug={business.slug} rating={business.rating} favorites={business.favorites}/></div>)}</div></div>}{businesses.length === 0 && <div className="mt-12 rounded-[28px] border border-dashed border-[#d9c3ad] bg-[#fffdf9] p-16 text-center"><Sparkles className="mx-auto text-[#A94743]" size={38}/><h2 className="mt-4 text-2xl font-black">Próximamente habrá más emprendedores</h2><p className="mt-3 text-[#75685f]">Estamos construyendo una comunidad local cada vez más grande.</p></div>}</section></main>;
+}

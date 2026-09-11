@@ -1,0 +1,18 @@
+import Link from "next/link";
+import Header from "../components/layout/Header";
+import BusinessCard from "../components/ui/BusinessCard";
+import { supabase } from "../lib/supabase";
+import { UtensilsCrossed, Palette, Shirt, Sparkles, Leaf, Home, Laptop, Gift } from "lucide-react";
+
+const categories = [{ name: "Gastronomía", icon: UtensilsCrossed }, { name: "Artesanías", icon: Palette }, { name: "Textiles", icon: Shirt }, { name: "Belleza", icon: Sparkles }, { name: "Productos Naturales", icon: Leaf }, { name: "Hogar y Decoración", icon: Home }, { name: "Tecnología", icon: Laptop }, { name: "Regalos", icon: Gift }];
+
+export default async function ExplorePage({ searchParams }: { searchParams?: Promise<{ categoria?: string }> }) {
+  const filters = await searchParams;
+  const category = filters?.categoria || "";
+  const query = supabase.from("businesses").select("*").eq("verified", true).order("premium", { ascending: false }).order("created_at", { ascending: false });
+  const { data: businesses } = category ? await query.eq("category", category) : await query;
+  const businessRows = businesses || [];
+  const productResults = await Promise.all(businessRows.map((business) => supabase.from("products").select("name,category").eq("business_id", business.id).eq("active", true).limit(6)));
+  const productMap = new Map(businessRows.map((business, index) => [business.id, productResults[index].data || []]));
+  return <main className="min-h-screen bg-[#f8f1e7]"><Header/><section className="mx-auto max-w-7xl px-5 py-14 lg:px-8"><div className="max-w-3xl"><span className="text-xs font-black uppercase tracking-[.25em] text-[#A94743]">Explora Ibarra</span><h1 className="mt-3 text-5xl font-black text-[#342821]">Emprendimientos locales</h1><p className="mt-5 text-lg leading-8 text-[#75685f]">Descubre tiendas, productos y servicios creados por personas de nuestra ciudad.</p></div><div className="mt-10 flex gap-3 overflow-x-auto pb-2">{categories.map(({ name, icon: Icon }) => <Link key={name} href={`/explorar?categoria=${encodeURIComponent(name)}`} className={`flex shrink-0 items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-bold ${category === name ? "border-[#A94743] bg-[#A94743] text-white" : "border-[#eadbca] bg-[#fffdf9] text-[#75685f] hover:border-[#A94743] hover:text-[#A94743]"}`}><Icon size={16}/>{name}</Link>)}</div>{category && <p className="mt-6 text-sm font-bold text-[#833B38]">Categoría seleccionada: {category} · <Link href="/explorar" className="underline">Ver todas</Link></p>}{businessRows.length === 0 ? <div className="mt-12 rounded-[28px] border border-dashed border-[#d9c3ad] bg-[#fffdf9] p-16 text-center"><Sparkles className="mx-auto text-[#A94743]" size={38}/><h2 className="mt-4 text-2xl font-black">Próximamente habrá más emprendimientos</h2><p className="mx-auto mt-3 max-w-lg text-[#75685f]">Estamos preparando nuevos negocios locales para que encuentres más opciones en esta categoría.</p></div> : <div className="mt-12 grid gap-7 md:grid-cols-2 lg:grid-cols-3">{businessRows.map((business) => <BusinessCard key={business.id} name={business.name} category={business.category || "Emprendimiento local"} description={business.description || "Productos y servicios hechos en Ibarra."} image={business.image || "/ibarra-hero.png"} location={business.city || "Ibarra"} verified={business.verified || false} premium={business.premium || false} slug={business.slug} rating={business.rating} favorites={business.favorites} subcategories={productMap.get(business.id)?.map((product) => product.category).filter(Boolean) as string[] || []}/>)}</div>}</section></main>;
+}
