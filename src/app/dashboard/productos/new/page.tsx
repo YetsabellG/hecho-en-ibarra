@@ -80,7 +80,7 @@ const slug =
 
       <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-lg p-10">
 
-        <h1 className="text-4xl font-bold text-[#76263d]">
+        <h1 className="text-4xl font-bold text-[#891C20]">
           New Product
         </h1>
 
@@ -245,7 +245,7 @@ const slug =
 
           <button
             type="submit"
-            className="bg-[#76263d] text-white px-8 py-4 rounded-xl hover:opacity-90"
+            className="bg-[#891C20] text-white px-8 py-4 rounded-xl hover:opacity-90"
           >
             Save Product
           </button>

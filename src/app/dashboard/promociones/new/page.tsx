@@ -140,7 +140,7 @@ export default function NewPromotionPage() {
 
           <div>
 
-            <h1 className="text-4xl font-bold text-[#76263d]">
+            <h1 className="text-4xl font-bold text-[#891C20]">
               Nueva Promoción
             </h1>
 
@@ -472,7 +472,7 @@ export default function NewPromotionPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#76263d] text-white py-4 rounded-xl hover:bg-[#641f31] disabled:opacity-50 transition font-semibold"
+            className="w-full bg-[#891C20] text-white py-4 rounded-xl hover:bg-[#75181c] disabled:opacity-50 transition font-semibold"
           >
 
             {loading

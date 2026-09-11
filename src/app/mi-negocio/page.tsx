@@ -91,7 +91,7 @@ export default function MyBusinessPage() {
     <main className="min-h-screen bg-[#F8F5EF] py-14 px-6">
       <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl p-10">
 
-        <h1 className="text-4xl font-bold text-[#76263d]">
+        <h1 className="text-4xl font-bold text-[#891C20]">
           Mi emprendimiento
         </h1>
 
@@ -178,7 +178,7 @@ export default function MyBusinessPage() {
           <button
             type="submit"
             disabled={loading}
-            className="md:col-span-2 bg-[#76263d] text-white py-4 rounded-2xl hover:bg-[#641f31] transition"
+            className="md:col-span-2 bg-[#891C20] text-white py-4 rounded-2xl hover:bg-[#75181c] transition"
           >
             {loading
               ? "Guardando..."

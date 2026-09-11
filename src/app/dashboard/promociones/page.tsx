@@ -86,7 +86,7 @@ useEffect(() => {
 
         <Link
           href="/dashboard/promociones/new"
-          className="bg-[#76263d] text-white px-8 py-4 rounded-full hover:bg-[#641f31] transition"
+          className="bg-[#891C20] text-white px-8 py-4 rounded-full hover:bg-[#75181c] transition"
         >
           + Nueva Promoción
         </Link>
@@ -148,7 +148,7 @@ useEffect(() => {
     {promotion.description}
   </p>
 
-  <div className="mt-4 flex items-center gap-2 text-[#76263d] font-semibold">
+  <div className="mt-4 flex items-center gap-2 text-[#891C20] font-semibold">
 
   {promotion.promotion_type === "percentage" && (
     <>
@@ -223,7 +223,7 @@ useEffect(() => {
 
   <Link
     href={`/dashboard/promociones/edit/${promotion.id}`}
-    className="flex-1 text-center bg-[#76263d] text-white py-3 rounded-xl hover:bg-[#641f31] transition"
+    className="flex-1 text-center bg-[#891C20] text-white py-3 rounded-xl hover:bg-[#75181c] transition"
   >
     Editar
   </Link>
@@ -231,7 +231,7 @@ useEffect(() => {
   <button
     type="button"
     onClick={() => handleDelete(promotion.id)}
-    className="flex-1 border border-[#76263d] text-[#76263d] py-3 rounded-xl hover:bg-[#76263d] hover:text-white transition"
+    className="flex-1 border border-[#891C20] text-[#891C20] py-3 rounded-xl hover:bg-[#891C20] hover:text-white transition"
   >
     Eliminar
   </button>

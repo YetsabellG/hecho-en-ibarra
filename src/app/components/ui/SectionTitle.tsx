@@ -11,7 +11,7 @@ export default function SectionTitle({
 }: Props) {
   return (
     <div className="text-center max-w-3xl mx-auto mb-12">
-      <p className="uppercase tracking-widest text-[#76263d] text-sm font-semibold mb-3">
+      <p className="uppercase tracking-widest text-[#891C20] text-sm font-semibold mb-3">
         {subtitle}
       </p>
 

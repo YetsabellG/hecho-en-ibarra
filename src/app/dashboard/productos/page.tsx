@@ -181,7 +181,7 @@ export default function ProductsPage() {
             <p className="text-gray-500 text-sm">
               💲 Valor Inventario
             </p>
-            <h2 className="text-4xl font-bold mt-3 text-[#76263d]">
+            <h2 className="text-4xl font-bold mt-3 text-[#891C20]">
               ${totalInventoryValue}
             </h2>
           </div>
@@ -222,7 +222,7 @@ export default function ProductsPage() {
 
           <Link
             href="/dashboard/productos/new"
-            className="bg-[#76263d] text-white px-8 py-4 rounded-full hover:bg-[#641f31] transition"
+            className="bg-[#891C20] text-white px-8 py-4 rounded-full hover:bg-[#75181c] transition"
           >
             + Nuevo Producto
           </Link>
@@ -377,7 +377,7 @@ export default function ProductsPage() {
                         product.status === "available"
                           ? "bg-green-100 text-green-700"
                           : product.status === "out_of_stock"
-                          ? "bg-[#f2dfe0] text-[#76263d]"
+                          ? "bg-[#f2dfe0] text-[#891C20]"
                           : "bg-gray-100 text-gray-700"
                       }`}
                     >
@@ -402,7 +402,7 @@ export default function ProductsPage() {
 
                   <div className="flex flex-wrap gap-3 mt-6">
 
-                    <span className="font-semibold text-[#76263d]">
+                    <span className="font-semibold text-[#891C20]">
                       💲 ${product.price}
                     </span>
 
@@ -419,14 +419,14 @@ export default function ProductsPage() {
                   <div className="mt-auto grid grid-cols-2 gap-3">
                                         <Link
                       href={`/dashboard/productos/edit/${product.id}`}
-                      className="text-center bg-[#76263d] text-white py-3 rounded-xl hover:bg-[#641f31] transition"
+                      className="text-center bg-[#891C20] text-white py-3 rounded-xl hover:bg-[#75181c] transition"
                     >
                       Editar
                     </Link>
 
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="border border-[#76263d] text-[#76263d] rounded-xl hover:bg-[#76263d] hover:text-white transition"
+                      className="border border-[#891C20] text-[#891C20] rounded-xl hover:bg-[#891C20] hover:text-white transition"
                     >
                       Eliminar
                     </button>

@@ -20,7 +20,7 @@ export default function ProductCard({
 
       <div className="p-6">
 
-        <p className="text-sm text-[#76263d]">
+        <p className="text-sm text-[#891C20]">
           {category}
         </p>
 
@@ -32,7 +32,7 @@ export default function ProductCard({
           {price}
         </p>
 
-        <button className="mt-5 w-full bg-[#76263d] text-white rounded-xl py-3">
+        <button className="mt-5 w-full bg-[#891C20] text-white rounded-xl py-3">
           Editar producto
         </button>
 
