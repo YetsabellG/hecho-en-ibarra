@@ -44,8 +44,13 @@ export async function createPromotion(promotion: PromotionInput) {
   return await supabase.from("promotions").insert({ ...promotion, uid: user.id, slug }).select().single<PromotionRecord>();
 }
 
-export async function getPromotions(businessId: number) {
-  return await supabase.from("promotions").select("*").eq("business_id", businessId).order("id", { ascending: false });
+export async function getPromotions(businessId: number, uid?: string) {
+  const query = supabase.from("promotions").select("*").eq("business_id", businessId).order("id", { ascending: false });
+  const result = await query;
+  if ((!result.data || result.data.length === 0) && uid) {
+    return await supabase.from("promotions").select("*").eq("uid", uid).order("id", { ascending: false });
+  }
+  return result;
 }
 
 export async function getPromotion(id: number) {

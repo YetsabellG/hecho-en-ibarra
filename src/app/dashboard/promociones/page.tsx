@@ -18,6 +18,8 @@ import {
 export default function PromotionsPage() {
 const [promotions, setPromotions] = useState<PromotionRecord[]>([]);
 const [loading, setLoading] = useState(true);
+const [errorMessage, setErrorMessage] = useState("");
+const [lastUpdated, setLastUpdated] = useState("");
 async function handleDelete(id: number) {
 
   const confirmed = window.confirm(
@@ -41,30 +43,23 @@ async function handleDelete(id: number) {
 
   alert("Promoción eliminada correctamente.");
 }
+async function loadPromotions() {
+  setErrorMessage("");
+  const user = await getUser();
+  if (!user) { setLoading(false); setErrorMessage("Inicia sesión para ver tus promociones."); return; }
+  const { data: business, error: businessError } = await getBusiness(user.id);
+  if (businessError || !business) { setLoading(false); setErrorMessage("No encontramos tu emprendimiento asociado."); return; }
+  const { data, error } = await getPromotions(business.id, user.id);
+  if (error) { setLoading(false); setErrorMessage(error.message); return; }
+  setPromotions(data ?? []);
+  setLastUpdated(new Date().toLocaleTimeString("es-EC", { hour: "2-digit", minute: "2-digit" }));
+  setLoading(false);
+}
 useEffect(() => {
-
-  async function loadPromotions() {
-
-    const user = await getUser();
-
-    if (!user) return;
-
-    const { data: business } =
-      await getBusiness(user.id);
-
-    if (!business) return;
-
-    const { data } =
-      await getPromotions(business.id);
-
-    setPromotions(data ?? []);
-
-    setLoading(false);
-
-  }
-
-  loadPromotions();
-
+  void loadPromotions();
+  const timer = window.setInterval(() => void loadPromotions(), 15000);
+  const channel = window.setTimeout(() => void loadPromotions(), 800);
+  return () => { window.clearInterval(timer); window.clearTimeout(channel); };
 }, []);
   return (
 
@@ -78,9 +73,7 @@ useEffect(() => {
             Mis Promociones
           </h1>
 
-          <p className="text-gray-500 mt-3">
-            Administra todas las promociones de tu negocio.
-          </p>
+          <p className="text-gray-500 mt-3">Administra todas las promociones de tu negocio. Se actualiza automáticamente.</p>
 
         </div>
 
@@ -91,9 +84,12 @@ useEffect(() => {
           + Nueva Promoción
         </Link>
 
-      </div>
+      </div><span className="text-xs text-gray-400">{lastUpdated ? `Actualizado ${lastUpdated}` : ""}</span>
 
-      {loading ? (
+      {errorMessage ? (
+  <div className="bg-white rounded-3xl shadow p-12 text-center"><h2 className="text-2xl font-bold text-[#891C20]">No se pudieron cargar tus promociones</h2><p className="mt-3 text-gray-500">{errorMessage}</p><button type="button" onClick={() => { setLoading(true); void loadPromotions(); }} className="mt-6 rounded-full bg-[#891C20] px-6 py-3 font-bold text-white">Reintentar</button></div>
+
+) : loading ? (
 
   <div className="bg-white rounded-3xl shadow p-20 text-center">
 
