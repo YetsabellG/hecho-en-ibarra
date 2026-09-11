@@ -62,7 +62,7 @@ const slug =
   slug,
   description,
   price: Number(price),
-  stock: Number(stock),
+  stock: itemType === "service" ? 0 : Number(stock),
   image: imageUrl,
   category,
   item_type: itemType,
@@ -85,11 +85,11 @@ const slug =
       <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-lg p-10">
 
         <h1 className="text-4xl font-bold text-[#891C20]">
-          Nuevo producto o servicio
+          {itemType === "service" ? "Nuevo servicio" : "Nuevo producto"}
         </h1>
 
         <p className="text-gray-500 mt-2">
-          Publica un producto, tratamiento o servicio de tu emprendimiento.
+          {itemType === "service" ? "Publica un servicio o atención profesional de tu emprendimiento." : "Publica un producto de tu emprendimiento."}
         </p>
 
         <form
@@ -123,14 +123,6 @@ const slug =
     onChange={(e) => setDescription(e.target.value)}
   />
 
-</div>
-
-<div>
-  <label className="font-semibold text-[#891C20]">¿Qué deseas publicar?</label>
-  <select className="w-full border rounded-xl p-4 mt-2" value={itemType} onChange={(e) => setItemType(e.target.value as "product" | "service")}>
-    <option value="product">Producto</option>
-    <option value="service">Servicio o atención profesional</option>
-  </select>
 </div>
 
 <div>
@@ -179,20 +171,10 @@ const slug =
 
             </div>
 
-            <div>
-
-              <label className="font-semibold">
-                Stock
-              </label>
-
-              <input
-                type="number"
-                className="w-full border rounded-xl p-4 mt-2"
-                value={stock}
-                onChange={(e) => setStock(e.target.value)}
-              />
-
-            </div>
+            {itemType === "product" && <div>
+              <label className="font-semibold">Stock</label>
+              <input type="number" className="w-full border rounded-xl p-4 mt-2" value={stock} onChange={(e) => setStock(e.target.value)} />
+            </div>}
 
           </div>
 <div>
@@ -236,7 +218,7 @@ const slug =
   </select>
 
 </div>
-          <FileDropzone value={image} onChange={setImage} label="Imagen o video del producto" />
+          <FileDropzone value={image} onChange={setImage} label="Imagen o video del producto o servicio" />
 
           <button
             type="submit"
