@@ -10,6 +10,7 @@ import {
   uploadProductImage,
 } from "../../../services/product";
 import type { ProductStatus } from "../../../services/product";
+import FileDropzone from "../../../components/ui/FileDropzone";
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -224,24 +225,7 @@ const slug =
   </select>
 
 </div>
-          <div>
-
-            <label className="font-semibold">
-              Product Image
-            </label>
-
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full border rounded-xl p-4 mt-2"
-              onChange={(e) => {
-                if (e.target.files?.length) {
-                  setImage(e.target.files[0]);
-                }
-              }}
-            />
-
-          </div>
+          <FileDropzone value={image} onChange={setImage} label="Imagen o video del producto" />
 
           <button
             type="submit"

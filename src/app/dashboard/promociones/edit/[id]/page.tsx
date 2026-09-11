@@ -8,6 +8,7 @@ import {
   updatePromotion,
   uploadPromotionImage,
 } from "../../../../services/promotion";
+import FileDropzone from "../../../../components/ui/FileDropzone";
 
 export default function EditPromotionPage() {
   const router = useRouter();
@@ -597,32 +598,7 @@ export default function EditPromotionPage() {
 
           {/* CAMBIAR IMAGEN */}
 
-          <div>
-
-            <label className="font-semibold">
-              Cambiar imagen
-              <span className="text-gray-400 font-normal">
-                {" "} (opcional)
-              </span>
-            </label>
-
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full border rounded-xl p-4 mt-2"
-              onChange={(e) =>
-                setImage(
-                  e.target.files?.[0] ?? null
-                )
-              }
-            />
-
-            <p className="text-sm text-gray-500 mt-2">
-              Si seleccionas una nueva imagen,
-              reemplazará la imagen actual.
-            </p>
-
-          </div>
+          <FileDropzone value={image} onChange={setImage} label="Cambiar imagen o video (opcional)" hint="La nueva carga reemplazará la imagen actual." />
 
           {/* GUARDAR */}
 

@@ -9,6 +9,7 @@ import {
   createPromotion,
   uploadPromotionImage,
 } from "@/app/services/promotion";
+import FileDropzone from "@/app/components/ui/FileDropzone";
 
 export default function NewPromotionPage() {
   const router = useRouter();
@@ -448,24 +449,7 @@ export default function NewPromotionPage() {
 
           {/* IMAGEN */}
 
-          <div>
-
-            <label className="font-semibold">
-              Imagen de la promoción
-            </label>
-
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full border rounded-xl p-4 mt-2"
-              onChange={(e) =>
-                setImage(
-                  e.target.files?.[0] ?? null
-                )
-              }
-            />
-
-          </div>
+          <FileDropzone value={image} onChange={setImage} label="Imagen o video de la promoción" />
 
           {/* BOTÓN */}
 

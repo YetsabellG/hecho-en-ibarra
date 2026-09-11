@@ -9,6 +9,7 @@ import {
   uploadProductImage,
 } from "../../../../services/product";
 import type { ProductStatus } from "../../../../services/product";
+import FileDropzone from "../../../../components/ui/FileDropzone";
 
 export default function EditProductPage() {
   const router = useRouter();
@@ -236,24 +237,7 @@ setCategory(data.category || "");
 
           )}
 
-          <div>
-
-            <label className="font-semibold">
-              Change Image
-            </label>
-
-            <input
-              type="file"
-              accept="image/*"
-              className="w-full border rounded-xl p-4 mt-2"
-              onChange={(e) => {
-                if (e.target.files?.length) {
-                  setNewImage(e.target.files[0]);
-                }
-              }}
-            />
-
-          </div>
+          <FileDropzone value={newImage} onChange={setNewImage} label="Cambiar imagen o video" />
 
           <button
             className="bg-[#891C20] text-white px-8 py-4 rounded-xl"
