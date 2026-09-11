@@ -16,6 +16,7 @@ export interface BusinessRecord {
   website: string | null;
   image: string | null;
   home_image: string | null;
+  home_image_position: "left" | "center" | "right" | string | null;
   verified: boolean | null;
   premium: boolean | null;
   products: number | null;
