@@ -45,5 +45,5 @@ export async function getPublicBusinesses() {
 }
 
 export async function updateBusiness(id: number, data: BusinessInput) {
-  return await supabase.from("businesses").update(data).eq("id", id).select("*").single<BusinessRecord>();
+  return await supabase.from("businesses").update(data).eq("id", id);
 }
