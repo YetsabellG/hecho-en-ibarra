@@ -15,6 +15,7 @@ export interface BusinessRecord {
   tiktok: string | null;
   website: string | null;
   image: string | null;
+  home_image: string | null;
   verified: boolean | null;
   premium: boolean | null;
   products: number | null;
