@@ -4,12 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Compass, Store, UserRound } from "lucide-react";
-import { signIn } from "../../services/auth";
+import { resendConfirmation, signIn } from "../../services/auth";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmationNeeded, setConfirmationNeeded] = useState(false);
   const router = useRouter();
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
@@ -17,7 +18,7 @@ export default function LoginPage() {
     setLoading(true);
     const { error } = await signIn(email, password);
     setLoading(false);
-    if (error) { alert(error.message); return; }
+    if (error) { setConfirmationNeeded(error.message.toLowerCase().includes("confirmed")); alert(error.message); return; }
     router.push("/dashboard");
   }
 
@@ -38,6 +39,7 @@ export default function LoginPage() {
             <label className="block text-sm font-bold text-[#342821]">Contraseña<input required type="password" placeholder="Tu contraseña" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-2 w-full rounded-2xl border px-5 py-4" /></label>
             <button type="submit" disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#891C20] py-4 font-bold text-white hover:bg-[#6f1519]">{loading ? "Ingresando…" : "Entrar como emprendedor"}<ArrowRight size={18}/></button>
           </form>
+          {confirmationNeeded && <button type="button" onClick={async () => { const { error } = await resendConfirmation(email); if (error) alert(error.message); else alert("Te enviamos un nuevo enlace de confirmación al correo indicado."); }} className="mt-4 w-full rounded-2xl border border-[#eadbca] px-4 py-3 text-sm font-bold text-[#891C20]">Reenviar correo de confirmación</button>}
           <div className="mt-4 text-right"><Link href="/auth/forgot-password" className="text-sm font-bold text-[#891C20] hover:underline">¿Olvidaste tu contraseña?</Link></div>
           <div className="mt-6 grid gap-3 sm:grid-cols-2"><Link href="/auth/register" className="flex items-center justify-center gap-2 rounded-2xl border border-[#eadbca] px-4 py-3 text-center text-sm font-bold text-[#6f1519] hover:bg-[#f4e7d9]"><Store size={17}/> Crear cuenta de emprendedor</Link><Link href="/auth/visitante" className="flex items-center justify-center gap-2 rounded-2xl border border-[#eadbca] px-4 py-3 text-center text-sm font-bold text-[#6c7d68] hover:bg-[#eef1eb]"><Compass size={17}/> Crear cuenta visitante</Link></div>
           <Link href="/administracion" className="mt-7 flex items-center justify-center gap-2 text-sm font-bold text-[#75685f] hover:text-[#891C20]"><UserRound size={16}/> Acceso separado para administradora</Link>
