@@ -2,192 +2,28 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
+import Link from "next/link";
+import { ArrowLeft, Save, Store } from "lucide-react";
+import FileDropzone from "../components/ui/FileDropzone";
 import { getUser } from "../services/auth";
-import { getBusiness, createBusiness } from "../services/business";
+import { getBusiness, updateBusiness } from "../services/business";
+import { supabase } from "../lib/supabase";
+
+type Form = { name: string; description: string; category: string; city: string; address: string; whatsapp: string; instagram: string; facebook: string; tiktok: string; website: string };
+const empty: Form = { name: "", description: "", category: "", city: "Ibarra", address: "", whatsapp: "", instagram: "", facebook: "", tiktok: "", website: "" };
 
 export default function MyBusinessPage() {
   const router = useRouter();
-
-  const [loading, setLoading] = useState(false);
-
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [city, setCity] = useState("");
-  const [address, setAddress] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
-  const [instagram, setInstagram] = useState("");
-  const [facebook, setFacebook] = useState("");
-  const [tiktok, setTiktok] = useState("");
-  const [website, setWebsite] = useState("");
-
-  useEffect(() => {
-    async function checkBusiness() {
-      const user = await getUser();
-
-      if (!user) {
-        router.push("/auth/login");
-        return;
-      }
-
-      const { data } = await getBusiness(user.id);
-
-      if (data) {
-        router.push("/dashboard");
-      }
-    }
-
-    checkBusiness();
-  }, [router]);
-
-  async function handleSubmit(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
-    e.preventDefault();
-
-    setLoading(true);
-
-    const user = await getUser();
-
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-
-    const { error } = await createBusiness({
-       uid: user.id,
-  name: name,
-  slug: name.toLowerCase().replace(/\s+/g, "-"),
-  description: description,
-  category: category,
-  city: city,
-  address: address,
-  whatsapp: whatsapp,
-  instagram: instagram,
-  facebook: facebook,
-  tiktok: tiktok,
-  website: website,
-  image: "",
-  verified: false,
-  premium: false,
-  products: 0,
-  rating: 0,
-  visits: 0,
-  favorites: 0,
-});
-
-    setLoading(false);
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    router.push("/dashboard");
-  }
-
-  return (
-    <main className="min-h-screen bg-[#F8F5EF] py-14 px-6">
-      <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl p-10">
-
-        <h1 className="text-4xl font-bold text-[#891C20]">
-          Mi emprendimiento
-        </h1>
-
-        <p className="text-gray-500 mt-3">
-          Completa la información de tu negocio.
-        </p>
-
-        <form
-          onSubmit={handleSubmit}
-          className="grid md:grid-cols-2 gap-6 mt-10"
-        >
-
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Nombre del emprendimiento"
-            className="border rounded-2xl px-5 py-4"
-          />
-
-          <input
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            placeholder="Categoría"
-            className="border rounded-2xl px-5 py-4"
-          />
-
-          <input
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder="Ciudad"
-            className="border rounded-2xl px-5 py-4"
-          />
-
-          <input
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="Dirección"
-            className="border rounded-2xl px-5 py-4"
-          />
-
-          <input
-            value={whatsapp}
-            onChange={(e) => setWhatsapp(e.target.value)}
-            placeholder="WhatsApp"
-            className="border rounded-2xl px-5 py-4"
-          />
-
-          <input
-            value={instagram}
-            onChange={(e) => setInstagram(e.target.value)}
-            placeholder="Instagram"
-            className="border rounded-2xl px-5 py-4"
-          />
-
-          <input
-            value={facebook}
-            onChange={(e) => setFacebook(e.target.value)}
-            placeholder="Facebook"
-            className="border rounded-2xl px-5 py-4"
-          />
-
-          <input
-            value={tiktok}
-            onChange={(e) => setTiktok(e.target.value)}
-            placeholder="TikTok"
-            className="border rounded-2xl px-5 py-4"
-          />
-
-          <input
-            value={website}
-            onChange={(e) => setWebsite(e.target.value)}
-            placeholder="Sitio web"
-            className="border rounded-2xl px-5 py-4 md:col-span-2"
-          />
-
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Descripción del emprendimiento"
-            rows={6}
-            className="border rounded-2xl px-5 py-4 md:col-span-2"
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="md:col-span-2 bg-[#891C20] text-white py-4 rounded-2xl hover:bg-[#75181c] transition"
-          >
-            {loading
-              ? "Guardando..."
-              : "Guardar emprendimiento"}
-          </button>
-
-        </form>
-
-      </div>
-    </main>
-  );
+  const [business, setBusiness] = useState<any>(null);
+  const [form, setForm] = useState<Form>(empty);
+  const [cover, setCover] = useState<File | null>(null);
+  const [preview, setPreview] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  useEffect(() => { async function load() { const user = await getUser(); if (!user) { router.replace("/auth/login"); return; } const { data, error } = await getBusiness(user.id); if (error || !data) { setLoading(false); return; } setBusiness(data); setForm({ name: data.name || "", description: data.description || "", category: data.category || "", city: data.city || "Ibarra", address: data.address || "", whatsapp: data.whatsapp || "", instagram: data.instagram || "", facebook: data.facebook || "", tiktok: data.tiktok || "", website: data.website || "" }); setPreview(data.image || ""); setLoading(false); } void load(); }, [router]);
+  function change(key: keyof Form, value: string) { setForm((current) => ({ ...current, [key]: value })); }
+  async function save(event: React.FormEvent) { event.preventDefault(); setSaving(true); const user = await getUser(); if (!user) { router.replace("/auth/login"); return; } let image = business.image || ""; if (cover) { const path = `${user.id}/${Date.now()}-${cover.name.replace(/[^a-zA-Z0-9._-]/g, "-")}`; const uploaded = await supabase.storage.from("businesses").upload(path, cover, { upsert: true }); if (uploaded.error) { alert(`No se pudo cargar la portada: ${uploaded.error.message}`); setSaving(false); return; } image = supabase.storage.from("businesses").getPublicUrl(path).data.publicUrl; } const { error } = await updateBusiness(business.id, { ...form, image }); setSaving(false); if (error) { alert(error.message); return; } setBusiness({ ...business, ...form, image }); setPreview(image); setCover(null); alert("Tu negocio y portada se actualizaron correctamente."); }
+  if (loading) return <main className="grid min-h-screen place-items-center bg-[#f8f1e7]"><p className="font-bold text-[#891C20]">Cargando tu negocio…</p></main>;
+  if (!business) return <main className="grid min-h-screen place-items-center bg-[#f8f1e7] px-5"><div className="rounded-3xl bg-[#fffdf9] p-10 text-center"><h1 className="text-2xl font-black">Todavía no tienes un emprendimiento</h1><p className="mt-3 text-[#75685f]">Completa primero el registro para activar tu panel.</p><Link href="/registro" className="mt-6 inline-flex rounded-full bg-[#891C20] px-5 py-3 font-bold text-white">Registrar emprendimiento</Link></div></main>;
+  return <main className="min-h-screen bg-[#f8f1e7] px-5 py-8 lg:px-10 lg:py-12"><div className="mx-auto max-w-5xl"><Link href="/dashboard" className="mb-7 inline-flex items-center gap-2 text-sm font-bold text-[#6f1519]"><ArrowLeft size={17}/> Volver al panel</Link><section className="overflow-hidden rounded-[32px] border border-[#eadbca] bg-[#fffdf9] shadow-xl"><div className="bg-[#6f1519] px-7 py-8 text-white sm:px-10"><div className="flex items-center gap-3"><span className="grid h-12 w-12 place-items-center rounded-2xl bg-white/15"><Store size={23}/></span><div><p className="text-xs font-black uppercase tracking-[.22em] text-[#f7d9c7]">Mi negocio</p><h1 className="mt-1 text-3xl font-black">Edita tu emprendimiento</h1></div></div><p className="mt-4 max-w-2xl text-sm leading-6 text-[#f7e8dd]">La portada que subas aquí se actualizará en tu perfil público, en la portada y en las pestañas de emprendimientos.</p></div><form onSubmit={save} className="grid gap-6 p-7 sm:p-10 md:grid-cols-2"><div className="md:col-span-2"><FileDropzone value={cover} onChange={(file) => { setCover(file); if (file) setPreview(URL.createObjectURL(file)); }} accept="image/*" label="Portada real del emprendimiento" hint="Selecciona o arrastra una imagen. Recomendado: formato horizontal."/>{preview && <div className="mt-4 overflow-hidden rounded-2xl border border-[#eadbca]"><img src={preview} alt="Vista previa de portada" className="h-56 w-full object-cover"/></div>}</div>{([ ["name","Nombre del emprendimiento"], ["category","Categoría"], ["city","Ciudad"], ["address","Dirección"], ["whatsapp","WhatsApp"], ["instagram","Instagram"], ["facebook","Facebook"], ["tiktok","TikTok"], ["website","Sitio web"]] as [keyof Form,string][]).map(([key, label]) => <label key={key} className={`block text-sm font-bold text-[#342821] ${key === "website" ? "md:col-span-2" : ""}`}>{label}<input value={form[key]} onChange={(e) => change(key, e.target.value)} className="mt-2 w-full rounded-2xl border border-[#eadbca] bg-white px-5 py-3.5 outline-none focus:border-[#891C20]"/></label>)}<label className="md:col-span-2 text-sm font-bold text-[#342821]">Descripción<textarea value={form.description} onChange={(e) => change("description", e.target.value)} rows={5} className="mt-2 w-full rounded-2xl border border-[#eadbca] bg-white px-5 py-3.5 outline-none focus:border-[#891C20]"/></label><button disabled={saving} className="md:col-span-2 flex items-center justify-center gap-2 rounded-2xl bg-[#891C20] py-4 font-bold text-white hover:bg-[#6f1519] disabled:opacity-60"><Save size={18}/>{saving ? "Guardando…" : "Guardar cambios y portada"}</button></form></section></div></main>;
 }
