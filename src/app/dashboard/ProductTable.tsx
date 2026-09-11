@@ -18,10 +18,10 @@ export default function ProductTable() {
 
         </div>
 
-        <button className="bg-[#A94743] text-white px-6 py-3 rounded-full">
+        <button className="bg-[#76263d] text-white px-6 py-3 rounded-full">
         <a
   href="/dashboard/productos"
-  className="bg-[#A94743] text-white px-6 py-3 rounded-full"
+  className="bg-[#76263d] text-white px-6 py-3 rounded-full"
 >
   + Nuevo producto
 </a>

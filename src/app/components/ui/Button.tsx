@@ -11,10 +11,10 @@ export default function Button({
 }: ButtonProps) {
   const styles = {
     primary:
-      "bg-[#A94743] hover:bg-[#8F3F3B] text-white",
+      "bg-[#76263d] hover:bg-[#641f31] text-white",
 
     secondary:
-      "bg-white border border-[#A94743] text-[#A94743] hover:bg-[#FFF5F5]",
+      "bg-white border border-[#76263d] text-[#76263d] hover:bg-[#FFF5F5]",
   };
 
   return (

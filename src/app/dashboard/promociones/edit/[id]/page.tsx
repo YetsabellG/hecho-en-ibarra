@@ -223,7 +223,7 @@ export default function EditPromotionPage() {
 
           <div>
 
-            <h1 className="text-4xl font-bold text-[#A94743]">
+            <h1 className="text-4xl font-bold text-[#76263d]">
               Editar Promoción
             </h1>
 
@@ -629,7 +629,7 @@ export default function EditPromotionPage() {
           <button
             type="submit"
             disabled={saving}
-            className="w-full bg-[#A94743] text-white py-4 rounded-xl hover:bg-[#8F3F3B] disabled:opacity-50 transition font-semibold"
+            className="w-full bg-[#76263d] text-white py-4 rounded-xl hover:bg-[#641f31] disabled:opacity-50 transition font-semibold"
           >
 
             {saving

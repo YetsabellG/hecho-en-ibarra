@@ -7,7 +7,7 @@ export default function Registro() {
         <div className="flex justify-between items-center mb-10">
 
           <div className="text-center flex-1">
-            <div className="w-10 h-10 rounded-full bg-red-700 text-white flex items-center justify-center mx-auto">
+            <div className="w-10 h-10 rounded-full bg-[#76263d] text-white flex items-center justify-center mx-auto">
               1
             </div>
             <p className="mt-2 text-sm font-medium">
@@ -65,7 +65,7 @@ export default function Registro() {
             className="w-full border rounded-xl p-4"
           />
 
-          <button className="bg-red-700 text-white rounded-full px-10 py-4">
+          <button className="bg-[#76263d] text-white rounded-full px-10 py-4">
             Continuar →
           </button>
 

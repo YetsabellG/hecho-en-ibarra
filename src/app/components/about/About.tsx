@@ -8,7 +8,7 @@ export default function About() {
 
           <div>
 
-            <p className="uppercase tracking-[4px] text-red-600">
+            <p className="uppercase tracking-[4px] text-[#76263d]">
               SOBRE NOSOTROS
             </p>
 
@@ -29,7 +29,7 @@ export default function About() {
 
               <div>
 
-                <h3 className="text-4xl font-bold text-red-700">
+                <h3 className="text-4xl font-bold text-[#76263d]">
                   0
                 </h3>
 
@@ -41,7 +41,7 @@ export default function About() {
 
               <div>
 
-                <h3 className="text-4xl font-bold text-red-700">
+                <h3 className="text-4xl font-bold text-[#76263d]">
                   0
                 </h3>
 
@@ -53,7 +53,7 @@ export default function About() {
 
               <div>
 
-                <h3 className="text-4xl font-bold text-red-700">
+                <h3 className="text-4xl font-bold text-[#76263d]">
                   0
                 </h3>
 
@@ -65,7 +65,7 @@ export default function About() {
 
               <div>
 
-                <h3 className="text-4xl font-bold text-red-700">
+                <h3 className="text-4xl font-bold text-[#76263d]">
                   0
                 </h3>
 

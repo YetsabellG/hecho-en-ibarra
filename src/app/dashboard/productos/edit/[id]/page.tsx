@@ -108,7 +108,7 @@ setCategory(data.category || "");
 
       <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-lg p-10">
 
-        <h1 className="text-4xl font-bold text-[#A94743]">
+        <h1 className="text-4xl font-bold text-[#76263d]">
           Edit Product
         </h1>
 
@@ -256,7 +256,7 @@ setCategory(data.category || "");
           </div>
 
           <button
-            className="bg-[#A94743] text-white px-8 py-4 rounded-xl"
+            className="bg-[#76263d] text-white px-8 py-4 rounded-xl"
           >
             Save Changes
           </button>

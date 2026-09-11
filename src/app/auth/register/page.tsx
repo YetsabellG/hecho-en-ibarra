@@ -46,7 +46,7 @@ if (password !== confirmPassword) {
 
         <div className="text-center">
 
-          <h1 className="text-4xl font-bold text-[#A94743]">
+          <h1 className="text-4xl font-bold text-[#76263d]">
             Crear cuenta
           </h1>
 
@@ -95,7 +95,7 @@ if (password !== confirmPassword) {
 
           <button
             disabled={loading}
-            className="w-full bg-[#A94743] text-white py-4 rounded-2xl hover:bg-[#8F3F3B] transition"
+            className="w-full bg-[#76263d] text-white py-4 rounded-2xl hover:bg-[#641f31] transition"
           >
             {loading ? "Creando cuenta..." : "Crear cuenta"}
           </button>
@@ -106,7 +106,7 @@ if (password !== confirmPassword) {
 
           <Link
             href="/auth/login"
-            className="text-[#A94743] font-semibold hover:underline"
+            className="text-[#76263d] font-semibold hover:underline"
           >
             Ya tengo una cuenta
           </Link>

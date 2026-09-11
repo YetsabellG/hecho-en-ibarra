@@ -7,7 +7,7 @@ interface Props {
 export default function StatsCard({
   title,
   value,
-  color = "#A94743",
+  color = "#76263d",
 }: Props) {
   return (
     <div className="bg-white rounded-3xl p-8 shadow hover:shadow-xl transition">

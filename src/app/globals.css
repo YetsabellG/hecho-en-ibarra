@@ -6,8 +6,8 @@
   --paper: #fffdf9;
   --muted: #75685f;
   --line: #eadbca;
-  --terracotta: #A94743;
-  --terracotta-dark: #833B38;
+  --terracotta: #76263d;
+  --terracotta-dark: #5a1d2e;
   --sage: #6c7d68;
   --gold: #c6924b;
 }
@@ -25,7 +25,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif;
-  background-image: radial-gradient(rgba(169, 79, 67, .07) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(118, 38, 61, .07) 1px, transparent 1px);
   background-size: 22px 22px;
 }
 button, a, input, select, textarea { transition: all 180ms ease-out; }
@@ -36,7 +36,7 @@ input, select, textarea {
   color: var(--foreground);
 }
 input:focus, select:focus, textarea:focus {
-  outline: 3px solid rgba(169, 79, 67, .16);
+  outline: 3px solid rgba(118, 38, 61, .16);
   border-color: var(--terracotta);
 }
 ::selection { background: #e8c7b6; color: #342821; }
