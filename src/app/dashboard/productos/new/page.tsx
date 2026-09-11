@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { getUser } from "../../../services/auth";
@@ -23,6 +23,7 @@ export default function NewProductPage() {
 const [category, setCategory] = useState("");
 const [status, setStatus] = useState<ProductStatus>("available");
   const [itemType, setItemType] = useState<"product" | "service">("product");
+  useEffect(() => { setItemType(new URLSearchParams(window.location.search).get("tipo") === "servicio" ? "service" : "product"); }, []);
 
   async function handleSubmit(
     e: React.FormEvent<HTMLFormElement>
@@ -73,7 +74,7 @@ const slug =
       return;
     }
 
-    alert("Product created successfully!");
+    alert("Producto o servicio creado correctamente.");
 
     router.push("/dashboard/productos");
   }
@@ -99,7 +100,7 @@ const slug =
           <div>
 
             <label className="font-semibold">
-              Product Name
+              Nombre del producto o servicio
             </label>
 
             <input
@@ -125,10 +126,10 @@ const slug =
 </div>
 
 <div>
-  <label className="font-semibold">Tipo de publicación</label>
+  <label className="font-semibold text-[#891C20]">¿Qué deseas publicar?</label>
   <select className="w-full border rounded-xl p-4 mt-2" value={itemType} onChange={(e) => setItemType(e.target.value as "product" | "service")}>
     <option value="product">Producto</option>
-    <option value="service">Servicio</option>
+    <option value="service">Servicio o atención profesional</option>
   </select>
 </div>
 

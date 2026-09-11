@@ -170,7 +170,7 @@ export default function ProductsPage() {
 
           <div className="bg-white rounded-3xl shadow p-6">
             <p className="text-gray-500 text-sm">
-              📦 Productos
+              📦 Productos y servicios
             </p>
             <h2 className="text-4xl font-bold mt-3">
               {totalProducts}
@@ -211,21 +211,19 @@ export default function ProductsPage() {
           <div>
 
             <h1 className="text-5xl font-bold">
-              Mis Productos
+              Mis productos y servicios
             </h1>
 
             <p className="text-gray-500 mt-2">
-              Administra todos tus productos.
+              Administra tus productos y servicios desde un solo lugar.
             </p>
 
           </div>
 
-          <Link
-            href="/dashboard/productos/new"
-            className="bg-[#891C20] text-white px-8 py-4 rounded-full hover:bg-[#75181c] transition"
-          >
-            + Nuevo Producto
-          </Link>
+          <div className="flex flex-wrap gap-3">
+          <Link href="/dashboard/productos/new?tipo=producto" className="bg-[#891C20] text-white px-6 py-4 rounded-full hover:bg-[#75181c] transition font-bold">+ Nuevo producto</Link>
+          <Link href="/dashboard/productos/new?tipo=servicio" className="border-2 border-[#891C20] text-[#891C20] px-6 py-4 rounded-full hover:bg-[#f4e7d9] transition font-bold">+ Nuevo servicio</Link>
+          </div>
 
         </div>
 
@@ -235,7 +233,7 @@ export default function ProductsPage() {
 
             <input
               type="text"
-              placeholder="Buscar producto..."
+              placeholder="Buscar producto o servicio..."
               value={search}
               onChange={(e) =>
                 setSearch(e.target.value)
