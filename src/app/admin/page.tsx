@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabase";
-import { BarChart3, Building2, CalendarDays, Check, ChevronRight, CreditCard, EyeOff, LayoutDashboard, LogOut, Menu, Package, Plus, Search, ShieldCheck, Tag, Trash2, X } from "lucide-react";
+import { BarChart3, Building2, CalendarDays, Check, ChevronRight, CreditCard, EyeOff, LayoutDashboard, LogOut, Menu, Package, Plus, Search, RefreshCw, ShieldCheck, Tag, Trash2, X } from "lucide-react";
 const ADMIN_EMAIL = "guerrero.antonellaa11@gmail.com";
 type Business = { id:number; name:string; slug:string; category:string|null; premium:boolean; plan:string; premium_until:string|null; city:string|null; verified:boolean|null };
 type Row = { id:number; name?:string; title?:string; status?:string|null; active?:boolean|null; business_id?:number };
