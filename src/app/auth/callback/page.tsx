@@ -9,8 +9,13 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     let active = true;
     async function finish() {
-      await supabase.auth.exchangeCodeForSession(window.location.href);
-      const next = new URL(window.location.href).searchParams.get("next") || "/dashboard";
+      const url = new URL(window.location.href);
+      const next = url.searchParams.get("next") || "/dashboard";
+      const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+      const accessToken = hash.get("access_token");
+      const refreshToken = hash.get("refresh_token");
+      if (accessToken && refreshToken) await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+      else if (url.searchParams.get("code")) await supabase.auth.exchangeCodeForSession(window.location.href);
       if (active) router.replace(next.startsWith("/") ? next : "/dashboard");
     }
     void finish();
