@@ -53,6 +53,10 @@ export default function Registro() {
         setPageState("unauthenticated");
         return;
       }
+      if (user.email?.toLowerCase() === "guerrero.antonellaa11@gmail.com") {
+        router.replace("/admin");
+        return;
+      }
       const { data: business } = await getBusiness(user.id);
       if (!active) return;
       if (business) {
@@ -75,6 +79,10 @@ export default function Registro() {
     if (!user) {
       setSaving(false);
       setPageState("unauthenticated");
+      return;
+    }
+    if (user.email?.toLowerCase() === "guerrero.antonellaa11@gmail.com") {
+      router.replace("/admin");
       return;
     }
 
