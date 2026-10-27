@@ -8,7 +8,13 @@ import {
   updatePromotion,
   uploadPromotionImage,
 } from "../../../../services/promotion";
+import { getUser } from "../../../../services/auth";
+import { getBusiness } from "../../../../services/business";
 import FileDropzone from "../../../../components/ui/FileDropzone";
+import PaidPromotionNotice from "../../../../components/plan/PaidPromotionNotice";
+import { hasPaidPromotionAccess } from "../../../../lib/planAccess";
+
+type PromotionAccess = "checking" | "allowed" | "locked" | "unauthenticated" | "no-business" | "not-owner" | "error";
 
 export default function EditPromotionPage() {
   const router = useRouter();
@@ -39,27 +45,39 @@ export default function EditPromotionPage() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [access, setAccess] = useState<PromotionAccess>("checking");
 
   useEffect(() => {
     async function loadPromotion() {
       if (!id) {
+        setAccess("error");
         setLoading(false);
         return;
       }
+
+      const user = await getUser();
+      if (!user) { setAccess("unauthenticated"); setLoading(false); return; }
+      const { data: business } = await getBusiness(user.id);
+      if (!business) { setAccess("no-business"); setLoading(false); return; }
+      if (!hasPaidPromotionAccess(business.plan, business.premium_until)) { setAccess("locked"); setLoading(false); return; }
 
       const { data, error } = await getPromotion(id);
 
       if (error) {
         alert(error.message);
+        setAccess("error");
         setLoading(false);
         return;
       }
 
       if (!data) {
         alert("No se encontró la promoción.");
+        setAccess("error");
         setLoading(false);
         return;
       }
+
+      if (data.uid !== user.id) { setAccess("not-owner"); setLoading(false); return; }
 
       setTitle(data.title ?? "");
       setDescription(data.description ?? "");
@@ -110,6 +128,7 @@ export default function EditPromotionPage() {
         data.image ?? ""
       );
 
+      setAccess("allowed");
       setLoading(false);
     }
 
@@ -122,6 +141,12 @@ export default function EditPromotionPage() {
     e.preventDefault();
 
     setSaving(true);
+
+    const user = await getUser();
+    if (!user) { setSaving(false); setAccess("unauthenticated"); return; }
+    const { data: business } = await getBusiness(user.id);
+    if (!business) { setSaving(false); setAccess("no-business"); return; }
+    if (!hasPaidPromotionAccess(business.plan, business.premium_until)) { setSaving(false); setAccess("locked"); return; }
 
     let imageUrl = currentImage;
 
@@ -213,6 +238,15 @@ export default function EditPromotionPage() {
 
       </main>
     );
+  }
+
+  if (access === "locked") {
+    return <main className="min-h-screen bg-[#F8F5EF] px-5 py-12"><PaidPromotionNotice /></main>;
+  }
+
+  if (access !== "allowed") {
+    const message = access === "unauthenticated" ? "Inicia sesión para continuar." : access === "no-business" ? "Registra primero tu emprendimiento." : access === "not-owner" ? "Esta promoción no pertenece a tu emprendimiento." : "No se pudo abrir esta promoción.";
+    return <main className="grid min-h-screen place-items-center bg-[#F8F5EF] p-6"><section className="max-w-lg rounded-3xl bg-white p-8 text-center shadow"><h1 className="text-2xl font-black text-[#891C20]">No se puede editar</h1><p className="mt-3 text-[#6d5960]">{message}</p><button onClick={() => router.push(access === "unauthenticated" ? "/auth/login" : access === "no-business" ? "/registro" : "/dashboard/promociones")} className="mt-6 rounded-full bg-[#891C20] px-6 py-3 font-bold text-white">{access === "unauthenticated" ? "Iniciar sesión" : access === "no-business" ? "Registrar emprendimiento" : "Volver a promociones"}</button></section></main>;
   }
 
   return (

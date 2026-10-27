@@ -19,6 +19,8 @@ export interface BusinessRecord {
   home_image_position: "left" | "center" | "right" | string | null;
   verified: boolean | null;
   premium: boolean | null;
+  plan: string | null;
+  premium_until: string | null;
   products: number | null;
   rating: number | null;
   visits: number | null;
@@ -31,7 +33,13 @@ export type BusinessInput = Partial<Omit<BusinessRecord, "id" | "created_at">> &
 };
 
 export async function createBusiness(data: BusinessInput) {
-  return await supabase.from("businesses").insert(data);
+  return await supabase.from("businesses").insert({
+    ...data,
+    plan: "gratis",
+    premium: false,
+    premium_until: null,
+    verified: false,
+  });
 }
 
 export async function getBusiness(uid: string) {

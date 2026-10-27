@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { getUser } from "@/app/services/auth";
@@ -10,9 +10,14 @@ import {
   uploadPromotionImage,
 } from "@/app/services/promotion";
 import FileDropzone from "@/app/components/ui/FileDropzone";
+import PaidPromotionNotice from "@/app/components/plan/PaidPromotionNotice";
+import { hasPaidPromotionAccess } from "@/app/lib/planAccess";
+
+type PromotionAccess = "checking" | "allowed" | "locked" | "no-business" | "unauthenticated";
 
 export default function NewPromotionPage() {
   const router = useRouter();
+  const [access, setAccess] = useState<PromotionAccess>("checking");
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -34,6 +39,20 @@ export default function NewPromotionPage() {
 
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    let active = true;
+    async function checkAccess() {
+      const user = await getUser();
+      if (!user) { if (active) setAccess("unauthenticated"); return; }
+      const { data: business } = await getBusiness(user.id);
+      if (!active) return;
+      if (!business) { setAccess("no-business"); return; }
+      setAccess(hasPaidPromotionAccess(business.plan, business.premium_until) ? "allowed" : "locked");
+    }
+    void checkAccess();
+    return () => { active = false; };
+  }, []);
+
   async function handleSubmit(
     e: React.FormEvent<HTMLFormElement>
   ) {
@@ -54,6 +73,12 @@ export default function NewPromotionPage() {
 
     if (!business) {
       alert("No se encontró tu emprendimiento.");
+      setLoading(false);
+      return;
+    }
+
+    if (!hasPaidPromotionAccess(business.plan, business.premium_until)) {
+      setAccess("locked");
       setLoading(false);
       return;
     }
@@ -130,6 +155,19 @@ export default function NewPromotionPage() {
     alert("Promoción creada correctamente.");
 
     router.push("/dashboard/promociones");
+  }
+
+  if (access === "checking") {
+    return <main className="grid min-h-screen place-items-center bg-[#F8F5EF] p-6"><p className="font-bold text-[#891C20]">Revisando tu plan…</p></main>;
+  }
+
+  if (access === "locked") {
+    return <main className="min-h-screen bg-[#F8F5EF] px-5 py-12"><PaidPromotionNotice /></main>;
+  }
+
+  if (access === "unauthenticated" || access === "no-business") {
+    const unauthenticated = access === "unauthenticated";
+    return <main className="grid min-h-screen place-items-center bg-[#F8F5EF] p-6"><section className="max-w-xl rounded-3xl bg-white p-8 text-center shadow"><h1 className="text-2xl font-black text-[#891C20]">{unauthenticated ? "Inicia sesión para continuar" : "Registra primero tu emprendimiento"}</h1><p className="mt-3 text-[#6d5960]">{unauthenticated ? "Ingresa a tu cuenta para administrar tus promociones." : "Crea el perfil de tu emprendimiento y vuelve a esta sección cuando tengas un plan de pago."}</p><button onClick={() => router.push(unauthenticated ? "/auth/login" : "/registro")} className="mt-6 rounded-full bg-[#891C20] px-6 py-3 font-bold text-white">{unauthenticated ? "Iniciar sesión" : "Registrar emprendimiento"}</button></section></main>;
   }
 
   return (

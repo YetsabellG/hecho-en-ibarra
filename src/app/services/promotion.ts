@@ -1,4 +1,22 @@
 import { supabase } from "../lib/supabase";
+import { hasPaidPromotionAccess } from "../lib/planAccess";
+
+async function requirePaidPromotionAccess() {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { user: null, error: new Error("Debes iniciar sesión.") };
+
+  const { data: business, error } = await supabase
+    .from("businesses")
+    .select("id, plan, premium_until")
+    .eq("uid", user.id)
+    .maybeSingle();
+  if (error) return { user: null, error };
+  if (!business) return { user: null, error: new Error("No encontramos tu emprendimiento asociado.") };
+  if (!hasPaidPromotionAccess(business.plan, business.premium_until)) {
+    return { user: null, error: new Error("Las promociones están disponibles en nuestros planes de pago. Revisa los planes para desbloquear esta opción.") };
+  }
+  return { user, error: null };
+}
 
 export type PromotionStatus = "active" | "inactive" | "hidden";
 export type PromotionType = "percentage" | "2x1" | "3x2" | "special_price" | "free_shipping" | "coupon" | "custom";
@@ -38,8 +56,8 @@ export async function uploadPromotionImage(file: File) {
 }
 
 export async function createPromotion(promotion: PromotionInput) {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { data: null, error: new Error("Debes iniciar sesión.") };
+  const { user, error } = await requirePaidPromotionAccess();
+  if (error || !user) return { data: null, error: error ?? new Error("Debes iniciar sesión.") };
   const slug = `${promotion.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}-${Date.now()}`;
   return await supabase.from("promotions").insert({ ...promotion, uid: user.id, slug }).select().single<PromotionRecord>();
 }
@@ -58,9 +76,13 @@ export async function getPromotion(id: number) {
 }
 
 export async function updatePromotion(id: number, promotion: Partial<PromotionInput>) {
-  return await supabase.from("promotions").update(promotion).eq("id", id);
+  const { user, error } = await requirePaidPromotionAccess();
+  if (error || !user) return { data: null, error: error ?? new Error("Debes iniciar sesión.") };
+  return await supabase.from("promotions").update(promotion).eq("id", id).eq("uid", user.id);
 }
 
 export async function deletePromotion(id: number) {
-  return await supabase.from("promotions").delete().eq("id", id);
+  const { user, error } = await requirePaidPromotionAccess();
+  if (error || !user) return { data: null, error: error ?? new Error("Debes iniciar sesión.") };
+  return await supabase.from("promotions").delete().eq("id", id).eq("uid", user.id);
 }

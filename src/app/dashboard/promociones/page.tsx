@@ -15,10 +15,13 @@ import {
   Tag,
   Sparkles,
 } from "lucide-react";
+import { hasPaidPromotionAccess } from "@/app/lib/planAccess";
+import PaidPromotionNotice from "@/app/components/plan/PaidPromotionNotice";
 export default function PromotionsPage() {
 const [promotions, setPromotions] = useState<PromotionRecord[]>([]);
 const [loading, setLoading] = useState(true);
 const [errorMessage, setErrorMessage] = useState("");
+const [planLocked, setPlanLocked] = useState(false);
 const [lastUpdated, setLastUpdated] = useState("");
 async function handleDelete(id: number) {
 
@@ -49,6 +52,8 @@ async function loadPromotions() {
   if (!user) { setLoading(false); setErrorMessage("Inicia sesión para ver tus promociones."); return; }
   const { data: business, error: businessError } = await getBusiness(user.id);
   if (businessError || !business) { setLoading(false); setErrorMessage("No encontramos tu emprendimiento asociado."); return; }
+  if (!hasPaidPromotionAccess(business.plan, business.premium_until)) { setPlanLocked(true); setPromotions([]); setLoading(false); return; }
+  setPlanLocked(false);
   const { data, error } = await getPromotions(business.id, user.id);
   if (error) { setLoading(false); setErrorMessage(error.message); return; }
   setPromotions(data ?? []);
@@ -56,9 +61,8 @@ async function loadPromotions() {
   setLoading(false);
 }
 useEffect(() => {
-  void loadPromotions();
   const timer = window.setInterval(() => void loadPromotions(), 15000);
-  const channel = window.setTimeout(() => void loadPromotions(), 800);
+  const channel = window.setTimeout(() => void loadPromotions(), 0);
   return () => { window.clearInterval(timer); window.clearTimeout(channel); };
 }, []);
   return (
@@ -86,7 +90,7 @@ useEffect(() => {
 
       </div><span className="text-xs text-gray-400">{lastUpdated ? `Actualizado ${lastUpdated}` : ""}</span>
 
-      {errorMessage ? (
+      {planLocked ? <PaidPromotionNotice /> : errorMessage ? (
   <div className="bg-white rounded-3xl shadow p-12 text-center"><h2 className="text-2xl font-bold text-[#891C20]">No se pudieron cargar tus promociones</h2><p className="mt-3 text-gray-500">{errorMessage}</p><button type="button" onClick={() => { setLoading(true); void loadPromotions(); }} className="mt-6 rounded-full bg-[#891C20] px-6 py-3 font-bold text-white">Reintentar</button></div>
 
 ) : loading ? (
